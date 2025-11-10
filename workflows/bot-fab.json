@@ -1,0 +1,631 @@
+{
+  "name": "bot-fab",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "bot-fabrica",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        64,
+        528
+      ],
+      "id": "56678461-c5a6-4b1f-89ed-4b8a9f620373",
+      "name": "Webhook",
+      "webhookId": "4a188460-4413-4068-99ba-416ddb78ef85"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "options": {
+          "systemMessage": "=Você é uma atendente virtual da Fábrica de Apps (https://fabricadeapps.dev).\nSua função é conversar com clientes, tirar dúvidas, agendar e cancelar reuniões no Google Calendar.\n\nRegras para agendamento:\n- Só agende quando tiver todas as informações:\n  • Data completa: dia, mês e ano.  \n  • Horário entre 08:00 e 17:00 (horário local GMT-03).  \n  • Nome completo do cliente.\n  • Email do cliente \n- Se faltar alguma informação, não use a ferramenta de agendamento. Solicite educadamente os dados que faltam.  \n- Sempre confirme a data e o horário com o cliente antes de agendar.  \n- Para cancelar, peça a confirmação da data e do horário da reunião a ser cancelada.  \n- Se o cliente não informar o ano, pergunte explicitamente por ele.  \n- Não aceite datas vagas como “hoje” ou “amanhã”; exija sempre a data completa.  \n- Não invente informações — use apenas o que o cliente informou.  \n\nApós confirmar com o cliente:\n1. Crie o evento no Google Calendar.  \n2. Envie automaticamente três e-mails:  \n   • Para o cliente, com os detalhes da reunião.  \n   • Para fabricadeapp021@gmail.com, também com os detalhes (ação interna). \n   • Para alanmc021@gmail.com, também com os detalhes (ação interna). \n\nInstruções de resposta para o cliente:\n- Confirme o agendamento com uma mensagem clara contendo:  \n  • Nome do cliente  \n  • Data da reunião  \n  • Horário de início e fim  \n  • Descrição da reunião  \n\n⚠️ Nunca inclua link do evento, nem mencione e-mails ou notificações internas.  \nSeja cordial e profissional.  \n\nVariáveis disponíveis:\n- Nome do cliente: {{ $json.contactName }}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1248,
+        512
+      ],
+      "id": "95a6bbce-14ef-4690-8472-4307396b8f77",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {
+          "responseFormat": "text"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1168,
+        672
+      ],
+      "id": "a24c3ac9-985f-44cc-919e-b630e7d91f09",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "7w1GZcAJoJiQKARg",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "read-messages",
+        "instanceName": "={{ $('Edit Fields').item.json.instancia }}",
+        "remoteJid": "={{ $('Edit Fields').item.json.number }}",
+        "messageId": "={{ $('Webhook').item.json.body.data.key.id }}"
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1648,
+        512
+      ],
+      "id": "86d5f551-ff32-48aa-833c-204255533743",
+      "name": "Evolution API",
+      "credentials": {
+        "evolutionApi": {
+          "id": "ZeBb9LAWMmUs9kvo",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Edit Fields').item.json.number }}",
+        "sessionTTL": 3600,
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.4,
+      "position": [
+        1312,
+        752
+      ],
+      "id": "794e17b6-10dd-406d-8cea-d45e15891cf8",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "70lrx04ACmeAYzTy",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "021355b0-5916-4802-b606-4bcc1097a338",
+              "name": "contactName",
+              "value": "={{ $json.body.data.pushName }}",
+              "type": "string"
+            },
+            {
+              "id": "e8e867da-d597-424c-b9f6-6686156b8990",
+              "name": "number",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "87811cfb-dfc2-4f7f-8590-53db5d10a5e1",
+              "name": "text",
+              "value": "={{ $json.body.data.message.conversation }}",
+              "type": "string"
+            },
+            {
+              "id": "4e008148-4fda-4717-a3e7-6e6c63f64317",
+              "name": "instancia",
+              "value": "={{ $json.body.instance }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        272,
+        528
+      ],
+      "id": "3b85f080-4a7b-4e57-8430-ce3f8a9d4d13",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "fabricadeapp021@gmail.com",
+          "mode": "list",
+          "cachedResultName": "fabricadeapp021@gmail.com"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "attendees": [],
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+          "summary": "={{ $('Edit Fields').item.json.contactName }} {{ $('Edit Fields').item.json.number }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1856,
+        768
+      ],
+      "id": "67cdb738-f7c0-446a-bc32-ee89c25d4493",
+      "name": "Create an event in Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "TLUStUsIWs5rIXKo",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data.base64",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        784,
+        624
+      ],
+      "id": "e71a029d-74fd-43b8-b882-0db6dc96409c",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        976,
+        624
+      ],
+      "id": "97b6860a-1cd2-4e35-94b1-4f389c338f0c",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "openAiApi": {
+          "id": "7w1GZcAJoJiQKARg",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "get-media-base64",
+        "instanceName": "={{ $json.instancia }}",
+        "messageId": "={{ $('Webhook').item.json.body.data.key.id }}",
+        "convertToMp4": true
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        608,
+        624
+      ],
+      "id": "710d1815-f2fb-4f17-89f5-a3588375e6e6",
+      "name": "Obter midia em base64",
+      "credentials": {
+        "evolutionApi": {
+          "id": "ZeBb9LAWMmUs9kvo",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "conversation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "b6c0d3d3-5c70-4a57-b7e0-274654e1bd0f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "41d0a8b6-7cea-4392-a52b-b940c8550026",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        416,
+        528
+      ],
+      "id": "5f5d7eeb-4e07-464c-bc9c-078c4b899137",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        1760,
+        896
+      ],
+      "id": "ee432ea3-6a76-4c33-8fc3-507c6cbf37ab",
+      "name": "Send a message to client",
+      "webhookId": "00f01d4e-4e8c-4fe2-98bf-fa6ef91aa9a4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AM2FyGrNwZW8jprS",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "fabricadeapp021@gmail.com",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        1424,
+        896
+      ],
+      "id": "2e81ddfa-fa13-4908-84be-569f1efc1a66",
+      "name": "Send a message to factory",
+      "webhookId": "153991c0-0e29-450a-91c9-ac67203ae9a9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AM2FyGrNwZW8jprS",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "alanmc021@gmail.com",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        1600,
+        896
+      ],
+      "id": "351fc78f-5063-44fa-9aeb-5c3117121bbd",
+      "name": "Send a message to Alan",
+      "webhookId": "87158e95-95f8-4b25-ad3a-54676ab54fdd",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AM2FyGrNwZW8jprS",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('Edit Fields').item.json.instancia }}",
+        "remoteJid": "={{ $('Edit Fields').item.json.number }}",
+        "messageText": "={{ $('AI Agent').item.json.output }}",
+        "options_message": {
+          "delay": 2000
+        }
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1936,
+        512
+      ],
+      "id": "6721d1ae-623d-4b13-a627-34121769cd25",
+      "name": "Enviar texto",
+      "alwaysOutputData": false,
+      "credentials": {
+        "evolutionApi": {
+          "id": "ZeBb9LAWMmUs9kvo",
+          "name": "Evolution account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.caprover.fabricadeapps.dev",
+            "x-real-ip": "172.18.0.1",
+            "x-forwarded-for": "172.18.0.1",
+            "x-forwarded-proto": "https",
+            "connection": "upgrade",
+            "content-length": "838",
+            "content-type": "application/json",
+            "user-agent": "axios/1.7.9",
+            "accept-encoding": "gzip, compress, deflate, br"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "teste-bot-fabrica",
+            "data": {
+              "key": {
+                "remoteJid": "5521980842812@s.whatsapp.net",
+                "fromMe": false,
+                "id": "AC85E3091294D30255742F3E0D92051D"
+              },
+              "pushName": "Wladmir Silveira",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "conversation": "Ola",
+                "messageContextInfo": {
+                  "deviceListMetadata": {
+                    "recipientKeyHash": "kYPckXnxd3/1vg==",
+                    "recipientTimestamp": "1760229141"
+                  },
+                  "deviceListMetadataVersion": 2,
+                  "messageSecret": "liWmmGGpM/9xTMvnKvUZfdULCZCnqgPx8HEzI6ceuVo="
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1760230000,
+              "instanceId": "aee8514e-1343-4261-b380-d671b3ed614e",
+              "source": "android"
+            },
+            "destination": "https://n8n.caprover.fabricadeapps.dev/webhook-test/bot-fabrica",
+            "date_time": "2025-10-11T21:46:40.580Z",
+            "sender": "5521935056683@s.whatsapp.net",
+            "server_url": "https://evolution-api.caprover.fabricadeapps.dev",
+            "apikey": null
+          },
+          "webhookUrl": "https://n8n.caprover.fabricadeapps.dev/webhook-test/bot-fabrica",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Evolution API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evolution API": {
+      "main": [
+        [
+          {
+            "node": "Enviar texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event in Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obter midia em base64": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Obter midia em base64",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message to client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message to factory": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message to Alan": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b3893f67-7ab4-453f-b071-98667f65b13e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7437655f8afbe414300fde75d38288383b2f1057fc36bf22587461ea62651bc9"
+  },
+  "id": "FDhK2BHrTzIO2Mwu",
+  "tags": []
+}

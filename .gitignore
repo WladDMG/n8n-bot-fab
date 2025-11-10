@@ -1,0 +1,18 @@
+# n8n / Node.js
+node_modules/
+.env
+.credentials/
+.credentials.json
+*.env
+*.log
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# Docker
+docker-compose.override.yml
+

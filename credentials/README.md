@@ -78,7 +78,6 @@ Usado como memória de chat para manter o contexto da conversa entre mensagens.
 Integração com o servidor do WhatsApp via Evolution API.
 
 ```json
-Copiar código
 {
   "name": "Evolution API (modelo)",
   "data": {
@@ -126,3 +125,4 @@ Wladmir Silveira
 Fábrica de Apps
 
 https://fabricadeapps.dev
+

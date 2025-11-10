@@ -1,6 +1,6 @@
 ## Descrição do Projeto
 
-Este repositório armazena o **workflow principal do bot da Fábrica de Apps**, desenvolvido no **n8n**, que integra:
+Este repositório armazena o **workflow principal do bot de atendimento no Whatsapp da Fábrica de Apps**, desenvolvido no **n8n**, que integra:
 
 - **WhatsApp (Evolution API)**
 - **OpenAI (GPT / Whisper)**
@@ -88,3 +88,4 @@ https://fabricadeapps.dev
 
 ## Licença
 Este projeto é distribuído sob a licença MIT — livre para uso, modificação e redistribuição.
+

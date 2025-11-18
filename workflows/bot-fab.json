@@ -1,5 +1,5 @@
 {
-  "name": "bot-fab",
+  "name": "bot-factory",
   "nodes": [
     {
       "parameters": {
@@ -10,7 +10,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        64,
+        -48,
         528
       ],
       "id": "56678461-c5a6-4b1f-89ed-4b8a9f620373",
@@ -71,7 +71,7 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        1648,
+        1696,
         512
       ],
       "id": "86d5f551-ff32-48aa-833c-204255533743",
@@ -94,7 +94,7 @@
       "typeVersion": 1.4,
       "position": [
         1312,
-        752
+        704
       ],
       "id": "794e17b6-10dd-406d-8cea-d45e15891cf8",
       "name": "Redis Chat Memory",
@@ -140,7 +140,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        272,
+        208,
         528
       ],
       "id": "3b85f080-4a7b-4e57-8430-ce3f8a9d4d13",
@@ -165,8 +165,8 @@
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.3,
       "position": [
-        1856,
-        768
+        1888,
+        992
       ],
       "id": "67cdb738-f7c0-446a-bc32-ee89c25d4493",
       "name": "Create an event in Google Calendar",
@@ -186,7 +186,7 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        784,
+        704,
         624
       ],
       "id": "e71a029d-74fd-43b8-b882-0db6dc96409c",
@@ -201,7 +201,7 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        976,
+        896,
         624
       ],
       "id": "97b6860a-1cd2-4e35-94b1-4f389c338f0c",
@@ -224,7 +224,7 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        608,
+        528,
         624
       ],
       "id": "710d1815-f2fb-4f17-89f5-a3588375e6e6",
@@ -296,7 +296,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        416,
+        352,
         528
       ],
       "id": "5f5d7eeb-4e07-464c-bc9c-078c4b899137",
@@ -312,8 +312,8 @@
       "type": "n8n-nodes-base.gmailTool",
       "typeVersion": 2.1,
       "position": [
-        1760,
-        896
+        1472,
+        992
       ],
       "id": "ee432ea3-6a76-4c33-8fc3-507c6cbf37ab",
       "name": "Send a message to client",
@@ -335,8 +335,8 @@
       "type": "n8n-nodes-base.gmailTool",
       "typeVersion": 2.1,
       "position": [
-        1424,
-        896
+        1312,
+        992
       ],
       "id": "2e81ddfa-fa13-4908-84be-569f1efc1a66",
       "name": "Send a message to factory",
@@ -358,8 +358,8 @@
       "type": "n8n-nodes-base.gmailTool",
       "typeVersion": 2.1,
       "position": [
-        1600,
-        896
+        1632,
+        992
       ],
       "id": "351fc78f-5063-44fa-9aeb-5c3117121bbd",
       "name": "Send a message to Alan",
@@ -396,6 +396,117 @@
           "name": "Evolution account"
         }
       }
+    },
+    {
+      "parameters": {
+        "content": "## Start workflow\n",
+        "height": 272,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -96,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "9d2ec3e2-04e4-4c7a-9530-4625c690c910",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Processing of the received message",
+        "height": 352,
+        "width": 912,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        176,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "41d36147-ca21-4eff-94d8-5c52e241c104",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Agent\n",
+        "height": 368,
+        "width": 512,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1120,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "2a639059-b3c7-4bc0-9358-d2f8749f980c",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Send emails\n",
+        "height": 272,
+        "width": 528,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1248,
+        912
+      ],
+      "typeVersion": 1,
+      "id": "d160682b-afab-4f20-a14b-e96e7c415edb",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Schedule the meeting",
+        "height": 272,
+        "width": 272,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1808,
+        912
+      ],
+      "typeVersion": 1,
+      "id": "7bae1592-0e99-4018-b64e-8f5191fcb91a",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Send message to whatsapp\n",
+        "height": 272,
+        "width": 464,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1664,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "e45e20d8-0795-4bec-9ca3-6f9a7f5f03bc",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Agent tools\n",
+        "height": 384,
+        "width": 864,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1232,
+        848
+      ],
+      "typeVersion": 1,
+      "id": "e50b75d5-9f1b-45e6-84aa-7eb6fc790ba1",
+      "name": "Sticky Note6"
     }
   ],
   "pinData": {
@@ -621,7 +732,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "b3893f67-7ab4-453f-b071-98667f65b13e",
+  "versionId": "7bf83083-f25f-48be-a022-229ad1384405",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7437655f8afbe414300fde75d38288383b2f1057fc36bf22587461ea62651bc9"

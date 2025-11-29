@@ -84,8 +84,9 @@ Wladmir Silveira
 
 Fábrica de Apps
 
-https://fabricadeapps.dev
+https://fabricadeapps.dev  
 
 ## Licença
 Este projeto é distribuído sob a licença MIT — livre para uso, modificação e redistribuição.
+
 
